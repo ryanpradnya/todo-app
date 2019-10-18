@@ -7,7 +7,8 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         title: Sequelize.STRING,
-        description: Sequelize.STRING
+        description: Sequelize.STRING,
+        checked: Sequelize.BOOLEAN
     });
 
     return todoList;
