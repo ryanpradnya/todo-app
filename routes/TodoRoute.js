@@ -6,9 +6,9 @@ const authMiddleware = require('../middleware/AuthMiddleware');
 
 const router = express.Router();
 
-router.get('/:userId', authMiddleware.veryfiToken, todoController.getTodos);
+router.get('/list', authMiddleware.veryfiToken, todoController.getTodos);
 
-router.post('/post', [
+router.post('/add', [
     body('title')
         .trim()
         .not().isEmpty().withMessage('Title is required.'),
@@ -16,7 +16,7 @@ router.post('/post', [
 ],
     todoController.addTodo);
 
-router.put('/:userId/:todoId', [
+router.put('/edit/:todoId', [
     body('title')
         .trim()
         .not().isEmpty().withMessage('Title is required.'),
@@ -24,8 +24,8 @@ router.put('/:userId/:todoId', [
 ],
     todoController.updateTodo);
 
-router.put('/check/:userId/:todoId', authMiddleware.veryfiToken, todoController.checkTodo);
+router.put('/check/:todoId', authMiddleware.veryfiToken, todoController.checkTodo);
 
-router.delete('/:userId/:todoId', authMiddleware.veryfiToken, todoController.deleteTodo);
+router.delete('/:todoId', authMiddleware.veryfiToken, todoController.deleteTodo);
 
 module.exports = router;

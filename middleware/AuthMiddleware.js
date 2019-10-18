@@ -45,6 +45,6 @@ exports.veryfiToken = (req, res, next) => {
         error.statusCode = 401;
         throw error;
     }
-    req.userId = decodedToken.Id;
+    req.userId = decodedToken.id;
     next();
 }
