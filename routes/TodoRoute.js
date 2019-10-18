@@ -33,6 +33,9 @@ router.put('/check/:todoId', [
     authMiddleware.checkExistingTodo],
     todoController.checkTodo);
 
-router.delete('/:todoId', authMiddleware.veryfiToken, todoController.deleteTodo);
+router.delete('/:todoId', [
+    authMiddleware.veryfiToken,
+    authMiddleware.checkExistingTodo],
+    todoController.deleteTodo);
 
 module.exports = router;

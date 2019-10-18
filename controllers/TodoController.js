@@ -136,4 +136,28 @@ exports.checkTodo = async (req, res, next) => {
     }
 };
 
-exports.deleteTodo = (req, res, next) => { };
+exports.deleteTodo = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const todoId = req.params['todoId'];
+    try {
+        if (!errors.isEmpty()) {
+            const error = new Error('Validation failed.');
+            error.statusCode = 422;
+            error.data = errors.array();
+            throw error;
+        }
+
+        const result = await TodoList.destroy({
+            where: { id: todoId }
+        });
+
+        res.status(201).json({ message: 'Todo deleted successfully' });
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+};
