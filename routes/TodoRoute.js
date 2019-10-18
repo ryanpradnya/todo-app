@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { body, param } = require('express-validator/check');
 
 const todoController = require('../controllers/TodoController');
@@ -6,9 +7,9 @@ const authMiddleware = require('../middleware/AuthMiddleware');
 
 const router = express.Router();
 
-router.get('/list', authMiddleware.veryfiToken, todoController.getTodos);
+router.get('/list', cors(), authMiddleware.veryfiToken, todoController.getTodos);
 
-router.post('/add', [
+router.post('/add', cors(), [
     body('title')
         .trim()
         .not().isEmpty().withMessage('Title is required.'),
@@ -16,7 +17,7 @@ router.post('/add', [
 ],
     todoController.addTodo);
 
-router.put('/edit/:todoId', [
+router.put('/edit/:todoId', cors(), [
     param('todoId')
         .exists()
         .withMessage('todoId is required.'),
@@ -28,12 +29,12 @@ router.put('/edit/:todoId', [
 ],
     todoController.updateTodo);
 
-router.put('/check/:todoId', [
+router.put('/check/:todoId', cors(), [
     authMiddleware.veryfiToken,
     authMiddleware.checkExistingTodo],
     todoController.checkTodo);
 
-router.delete('/:todoId', [
+router.delete('/:todoId', cors(), [
     authMiddleware.veryfiToken,
     authMiddleware.checkExistingTodo],
     todoController.deleteTodo);
