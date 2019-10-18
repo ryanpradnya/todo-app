@@ -4,6 +4,7 @@ const db = require('../util/Database');
 const config = require('../util/Config');
 
 const User = db.user;
+const TodoList = db.todolist;
 
 exports.checkExistingEmail = async (req, res, next) => {
     const email = req.body.email;
@@ -48,3 +49,25 @@ exports.veryfiToken = (req, res, next) => {
     req.userId = decodedToken.id;
     next();
 }
+
+exports.checkExistingTodo = async (req, res, next) => {
+    const todoId = req.params['todoId'];
+    try {
+        const todo = await TodoList.findOne({ where: { id: todoId } })
+        if (!todo) {
+            const error = new Error('Todo not found!');
+            error.statusCode = 404;
+            throw error;
+        } else {
+            console.log('checked', todo.checked);
+            req.checked = todo.checked;
+            next();
+        }
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
+};

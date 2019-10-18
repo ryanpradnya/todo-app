@@ -1,5 +1,5 @@
 const express = require('express');
-const { body } = require('express-validator/check');
+const { body, param } = require('express-validator/check');
 
 const todoController = require('../controllers/TodoController');
 const authMiddleware = require('../middleware/AuthMiddleware');
@@ -17,14 +17,21 @@ router.post('/add', [
     todoController.addTodo);
 
 router.put('/edit/:todoId', [
+    param('todoId')
+        .exists()
+        .withMessage('todoId is required.'),
     body('title')
         .trim()
         .not().isEmpty().withMessage('Title is required.'),
-    authMiddleware.veryfiToken
+    authMiddleware.veryfiToken,
+    authMiddleware.checkExistingTodo
 ],
     todoController.updateTodo);
 
-router.put('/check/:todoId', authMiddleware.veryfiToken, todoController.checkTodo);
+router.put('/check/:todoId', [
+    authMiddleware.veryfiToken,
+    authMiddleware.checkExistingTodo],
+    todoController.checkTodo);
 
 router.delete('/:todoId', authMiddleware.veryfiToken, todoController.deleteTodo);
 
