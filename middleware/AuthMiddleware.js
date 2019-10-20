@@ -27,14 +27,16 @@ exports.checkExistingEmail = async (req, res, next) => {
 };
 
 exports.veryfiToken = (req, res, next) => {
-    let token = req.headers['access-token'];
+    let authHeader = req.get('Authorization');
+
     let decodedToken;
 
-    if (!token) {
+    if (!authHeader) {
         const error = new Error('No token provided');
         error.statusCode = 403;
         throw error;
     }
+    const token = authHeader.split(' ')[1];
     try {
         decodedToken = jwt.verify(token, config.jwtSecret);
     } catch (err) {

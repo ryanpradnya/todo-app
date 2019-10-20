@@ -56,7 +56,10 @@ exports.addTodo = async (req, res, next) => {
             checked: false,
             userId: userId
         });
-        res.status(201).json({ message: 'Todo created!', todoId: result.id });
+
+        const addedTodo = await TodoList.findOne({ where: { id: result.id } });
+
+        res.status(201).json({ message: 'Todo created!', todo: addedTodo });
 
     } catch (err) {
         if (!err.statusCode) {
@@ -86,8 +89,9 @@ exports.updateTodo = async (req, res, next) => {
         }, {
             where: { id: todoId }
         });
+        const updatedTodo = await TodoList.findOne({ where: { id: todoId } });
 
-        res.status(201).json({ message: 'Todo updated!', todo: result.id });
+        res.status(201).json({ message: 'Todo updated!', todo: updatedTodo });
 
     } catch (err) {
         if (!err.statusCode) {
@@ -126,7 +130,9 @@ exports.checkTodo = async (req, res, next) => {
             where: { id: todoId }
         });
 
-        res.status(201).json({ message: message, todo: result.id });
+        const updatedTodo = await TodoList.findOne({ where: { id: todoId } });
+
+        res.status(201).json({ message: message, todo: updatedTodo });
 
     } catch (err) {
         if (!err.statusCode) {
@@ -148,11 +154,13 @@ exports.deleteTodo = async (req, res, next) => {
             throw error;
         }
 
-        const result = await TodoList.destroy({
+        const deletedTodo = await TodoList.findOne({ where: { id: todoId } });
+
+        await TodoList.destroy({
             where: { id: todoId }
         });
 
-        res.status(201).json({ message: 'Todo deleted successfully' });
+        res.status(201).json({ message: 'Todo deleted successfully', todo: deletedTodo });
 
     } catch (err) {
         if (!err.statusCode) {
